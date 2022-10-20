@@ -14,7 +14,7 @@ const Users = Models.User;
 ////
 const { check, validationResult } = require('express-validator');
 
-// cors security info below//
+// test cors security info below//
 const cors = require('cors');
 //below code shows origins that are authorized//
 let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
