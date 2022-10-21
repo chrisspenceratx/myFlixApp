@@ -30,7 +30,7 @@ app.use(cors({
   }
 }));
 
-/* rest of code goes here*/
+/* rest rest of code goes here*/
 let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
