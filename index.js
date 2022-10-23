@@ -46,7 +46,7 @@ process.env.CONNECTION_URI,
 app.use(morgan('common'));
 
 // directs visits to public foler//
-app.use('/static', express.static('public'));
+app.use(express.static('public'));
 
 let users = [
   { id: 1,
