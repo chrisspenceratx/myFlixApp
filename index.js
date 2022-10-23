@@ -6,29 +6,29 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const uuid = require('uuid');
+const { check, validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 const Models = require('./models.js');
 const Movies = Models.Movie;
 const Users = Models.User;
 
 ////
-const { check, validationResult } = require('express-validator');
 
 // test cors security info below//
 const cors = require('cors');
-//below code shows origins that are authorized//
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if(!origin) return callback(null, true);
-    if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
-      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
-      return callback(new Error(message ), false);
-    }
-    return callback(null, true);
-  }
-}));
+//below code shows origins that are authorized//
+// let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+// app.use(cors({
+//   origin: (origin, callback) => {
+//     if(!origin) return callback(null, true);
+//     if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
+//       let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
+//       return callback(new Error(message ), false);
+//     }
+//     return callback(null, true);
+//   }
+// }));
 
 /* rest rest of code goes here*/
 let auth = require('./auth')(app);
@@ -278,7 +278,7 @@ app.post('/users',
     });
   });
 
-app.post('/users/:Username/movies/:MovieID', (req, res) => {
+app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
      $push: { FavoriteMovies: req.params.MovieID }
    },
@@ -345,16 +345,17 @@ app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req
     });
 });
 
-app.get('/movies/genres/:Genre', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Movies.find({ "Genre.Name": req.params.Genre })
-    .then((movies) => {
-      res.send(movies);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(400).send('Error: ' + err);
-    })
-});
+
+// app.get('/genres/:Genre', passport.authenticate('jwt', { session: false }), (req, res) => {
+//   Movies.find({ "Genre.Name": req.params.Genre })
+//     .then((movies) => {
+//       res.send(movies);
+//     })
+//     .catch((err) => {
+//       console.error(err);
+//       res.status(400).send('Error: ' + err);
+//     })
+// });
 
 // app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
 //   Movies.find()
@@ -379,7 +380,7 @@ app.get('/genre/:genreName', passport.authenticate('jwt', { session: false }), (
     })
 });
 
-app.get('/movies/director/:directorName', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/director/:directorName', passport.authenticate('jwt', { session: false }), (req, res) => {
    Movies.findOne({ directorName: req.params.directorName })
   .then((movie) => {
     res.json(movie.Director);
@@ -392,7 +393,7 @@ app.get('/movies/director/:directorName', passport.authenticate('jwt', { session
 
 // UPDATE //
 
-app.put('/users/:Username', (req, res) => {
+app.put('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, { $set:
     {
       Username: req.body.Username,
@@ -413,7 +414,7 @@ app.put('/users/:Username', (req, res) => {
 });
 
 // DELETE//
-app.delete('/users/:Username/movies/:MovieID', (req, res) => {
+app.delete('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
      $pull: { FavoriteMovies: req.params.MovieID }
    },
@@ -428,7 +429,7 @@ app.delete('/users/:Username/movies/:MovieID', (req, res) => {
   });
 });
 
-app.delete('/users/:Username', (req, res) => {
+app.delete('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndRemove({ Username: req.params.Username })
     .then((user) => {
       if (!user) {
