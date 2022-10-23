@@ -397,14 +397,14 @@ app.get('/director/:directorName', passport.authenticate('jwt', { session: false
 
 app.put('/users/:Username', passport.authenticate('jwt', { session: false }),  
 
-[ check("Username", "Username is required").isLength({ min: 5 }),
-  check(
-    "Username",
-    "Username contains non alphanumeric characters - not allowed."
-  ).isAlphanumeric(),
-  check("Password", "Password is required").not().isEmpty(),
-  check("Email", "Email does not appear to be valid").isEmail(),
-],
+// [ check("Username", "Username is required").isLength({ min: 5 }),
+//   check(
+//     "Username",
+//     "Username contains non alphanumeric characters - not allowed."
+//   ).isAlphanumeric(),
+//   check("Password", "Password is required").not().isEmpty(),
+//   check("Email", "Email does not appear to be valid").isEmail(),
+// ],
 (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, { $set:
     {
