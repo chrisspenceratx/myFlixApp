@@ -297,7 +297,7 @@ app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { sess
 
 // READ //
 app.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
-  res.status(200).json('Thank you for visiting my API!');
+  res.sendFile(__dirname + '/index.html')
 });
 
 app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
