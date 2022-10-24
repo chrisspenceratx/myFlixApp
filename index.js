@@ -209,7 +209,7 @@ app.get('/director/:directorName', passport.authenticate('jwt', { session: false
 
 // UPDATE //
 
-app.put('/users/:Username', passport.authenticate('jwt', { session: false }),  
+app.put('/users/:Username', 
 
 // [ check("Username", "Username is required").isLength({ min: 5 }),
 //   check(
