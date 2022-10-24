@@ -299,7 +299,7 @@ app.get('/', (req, res) => {
   res.send("Welcome to MyFlixApp!");
 });
 
-app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/users', (req, res) => {
   Users.find()
     .then((users) => {
       
