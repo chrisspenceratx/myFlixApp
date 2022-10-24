@@ -80,9 +80,9 @@ app.post('/users',
           Email: req.body.Email,
           Birth: req.body.Birth,
         })
-        // .then ((user) => {
-        //   res.status(201).json(user);
-        // })
+        .then ((user) => {
+          res.status(201).json(user);
+        })
         .catch((error) => {
           console.error(error);
           res.status(500).send('Error:' + error);
