@@ -13,9 +13,9 @@ const Movies = Models.Movie;
 const Users = Models.User;
 
 // local database
-mongoose.connect('mongodb://localhost:27017/movieDB', {useNewUrlParser: true, useUnifiedTopology: true});
+//mongoose.connect('mongodb://localhost:27017/movieDB', {useNewUrlParser: true, useUnifiedTopology: true});
 // online database
-// mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // MIDDLEWARE
 app.use(bodyParser.json());
@@ -283,9 +283,7 @@ app.use((err, req, res, next) => {
 });
 
 // Widened accesibility from port 8080 only //
-app.listen(8080, () => {
-  console.log('Your app is listening on port 8080.');
-// const port = process.env.PORT || 8080;
-// app.listen(port, '0.0.0.0',() => {
-//  console.log('Listening on Port ' + port);
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0',() => {
+ console.log('Listening on Port ' + port);
 });
