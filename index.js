@@ -369,28 +369,46 @@ app.get('/director/:directorName', passport.authenticate('jwt', { session: false
   });
 });
 // UPDATE //
-app.put('/users/:Username', passport.authenticate('jwt', { session: false }), userValidation, (req, res) => {
-  let hashedPassword = Users.hashPassword(req.body.Password);
-  //check for validation errors
-          Users.findOneAndUpdate({ Username: req.params.Username }, {
-            $set:
-            {
-              Username: req.body.Username,
-              Password: hashedPassword,
-              Email: req.body.Email,
-              Birthday: req.body.Birthday
-            }
+app.put(
+  '/users/:Username',
+  passport.authenticate('jwt', { session: false }),
+  [
+      check('Username', 'Username is required').isLength({ min: 5 }),
+      check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+      check('Password', 'Password is required').not().isEmpty(),
+      check('Email', 'Email does not appear to be valid').isEmail()
+  ],
+  (req, res) => {
+      // check the validation object for errors
+      let errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+          return res.status(422).json({ errors: errors.array() });
+      }
+
+      let hashedPassword = Users.hashPassword(req.body.Password);
+      Users.findOneAndUpdate(
+          { Username: req.params.Username },
+          {
+              $set: {
+                  Username: req.body.Username,
+                  Password: hashedPassword,
+                  Email: req.body.Email,
+                  Birthday: req.body.Birthday
+              }
           },
-            { new: true }) // updated document is returned
-            .then((updatedUser) => {
-              res.status(200).json(updatedUser);
-            })
-            .catch((err) => {
-              console.error(err);
-              res.status(500).send('Error: ' + err);
-            });
-        }
+          { new: true }, // This line makes sure that the updated document is returned
+          (err, updatedUser) => {
+              if (err) {
+                  console.error(err);
+                  res.status(500).send('Error: ' + err);
+              } else {
+                  res.json(updatedUser);
+              }
+          }
       );
+  }
+);
 
 
 // DELETE//
