@@ -373,20 +373,7 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }), us
   let hashedPassword = Users.hashPassword(req.body.Password);
   //check for validation errors
   let errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
-  }
-  // only allow if request is referring to active user
-  if (req.user.Username != req.params.Username) {
-    res.status(403).json("Not authorized.");
-  } else {
-    // check if requested new username is already taken 
-    Users.findOne({ Username: req.body.Username })
-      .then((user) => {
-        if (user) {
-          return res.status(400).send('Username ' + req.body.Username + ' already taken.');
-        } else {
-          // update user data
+  
           Users.findOneAndUpdate({ Username: req.params.Username }, {
             $set:
             {
@@ -405,15 +392,8 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }), us
               res.status(500).send('Error: ' + err);
             });
         }
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send('Error: ' + error);
-      });
+      );
 
-
-  }
-});
 
 // DELETE//
 app.delete('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { session: false }), (req, res) => {
