@@ -369,35 +369,52 @@ app.get('/director/:directorName', passport.authenticate('jwt', { session: false
   });
 });
 // UPDATE //
-app.put('/users/:Username', passport.authenticate('jwt', { session: false }),  
-// [ check("Username", "Username is required").isLength({ min: 5 }),
-//   check(
-//     "Username",
-//     "Username contains non alphanumeric characters - not allowed."
-//   ).isAlphanumeric(),
-//   check("Password", "Password is required").not().isEmpty(),
-//   check("Email", "Email does not appear to be valid").isEmail(),
-// ],
-(req, res) => {
-  Users.findOneAndUpdate({ Username: req.params.Username }, { $set:
-    {
-      Username: req.body.Username,
-      // Password: req.body.Password,
-      Password: hashedPassword,
-      Email: req.body.Email,
-      Birthday: req.body.Birthday,
-      FavoriteMovies: req.body.FavoriteMovies
-    }
-  },
-  { new: true },
-  (err, updatedUser) => {
-    if(err) {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-      res.json(updatedUser);
-    }
-  });
+app.put('/users/:Username', passport.authenticate('jwt', { session: false }), userValidation, (req, res) => {
+  let hashedPassword = Users.hashPassword(req.body.Password);
+  //check for validation errors
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+  // only allow if request is referring to active user
+  if (req.user.Username != req.params.Username) {
+    res.status(403).json("Not authorized.");
+  } else {
+    // check if requested new username is already taken 
+    Users.findOne({ Username: req.body.Username })
+      .then((user) => {
+        if (user) {
+          return res.status(400).send('Username ' + req.body.Username + ' already taken.');
+        } else {
+          // update user data
+          Users.findOneAndUpdate({ Username: req.params.Username }, {
+            $set:
+            {
+              Username: req.body.Username,
+              Password: hashedPassword,
+              Email: req.body.Email,
+              Birthday: req.body.Birthday
+            }
+          },
+            { new: true }) // updated document is returned
+            .then((updatedUser) => {
+              res.status(200).json(updatedUser);
+            })
+            .catch((err) => {
+              console.error(err);
+              res.status(500).send('Error: ' + err);
+            });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send('Error: ' + error);
+      });
+
+
+  }
 });
+
 // DELETE//
 app.delete('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
