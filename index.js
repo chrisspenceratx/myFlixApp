@@ -372,8 +372,6 @@ app.get('/director/:directorName', passport.authenticate('jwt', { session: false
 app.put('/users/:Username', passport.authenticate('jwt', { session: false }), userValidation, (req, res) => {
   let hashedPassword = Users.hashPassword(req.body.Password);
   //check for validation errors
-  let errors = validationResult(req);
-  
           Users.findOneAndUpdate({ Username: req.params.Username }, {
             $set:
             {
