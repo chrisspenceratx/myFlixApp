@@ -36,9 +36,7 @@ let movieSchema = mongoose.Schema({
   
   let Movie = mongoose.model('Movie', movieSchema);
   let User = mongoose.model('User', userSchema);
-  // added director variable below on 10.25 to call in postman //
-  let director = mongoose.model.Director('Director', movieSchema);
-  
+ 
   module.exports.Movie = Movie;
   module.exports.User = User;
 
