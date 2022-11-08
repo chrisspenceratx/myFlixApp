@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import MainView from './components/main-view/main-view';
+import  MainView  from './components/main-view/main-view';
 import { MovieCard } from '../movie-card/movie-card';
 
 // Import statement to indicate that you need to bundle `./index.scss`
@@ -20,6 +20,8 @@ class MyFlixApplication extends React.Component {
         );
       }
 }
+
+export default MainView;
 
 // Finds the root of your app
 const container = document.getElementsByClassName('app-container')[0];
