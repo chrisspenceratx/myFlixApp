@@ -11,21 +11,21 @@ const Models = require('./models.js');
 const Movies = Models.Movie;
 const Users = Models.User;
 ////
-// //test cors security info below//
+// test cors security info below//
 const cors = require('cors');
-const allowedOrigins = ["*"];
+// const allowedOrigins = ["*"];
 //below code shows origins that are authorized//
-// let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
-// app.use(cors({
-//   origin: (origin, callback) => {
-//     if(!origin) return callback(null, true);
-//     if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
-//       let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
-//       return callback(new Error(message ), false);
-//     }
-//     return callback(null, true);
-//   }
-// }));
+let allowedOrigins = ['http://localhost:8080', 'http://myflixfinder.herokuapp.com', 'https://myflixfinder.herokuapp.com', 'mongodb://localhost:27017/myflixfinderdb', 'mongodb://localhost:27017'];
+app.use(cors({
+  origin: (origin, callback) => {
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){ // If a specific origin isn’t found on the list of allowed origins
+      let message = 'The CORS policy for this application doesn’t allow access from origin ' + origin;
+      return callback(new Error(message ), false);
+    }
+    return callback(null, true);
+  }
+}));
 /* rest rest of code goes here*/
 let auth = require('./auth')(app);
 const passport = require('passport');
@@ -48,7 +48,7 @@ let users = [
     favoriteMovies: ["The Fountain"]
   }
 ];
-//here is a 12.1 test//
+
 // variable declared for movie list//
 let movies = [
   {
