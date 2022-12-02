@@ -447,7 +447,7 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 // Widened accesibility from port 8080 only //
-// const port = process.env.PORT || 8080;
-// app.listen(port, '0.0.0.0',() => {
-//  console.log('Listening on Port ' + port);
-// });//
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0',() => {
+ console.log('Listening on Port ' + port);
+});//
