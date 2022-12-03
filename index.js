@@ -306,7 +306,9 @@ app.get('/users/:Username', passport.authenticate('jwt', { session: false }), (r
       res.status(500).send('Error: ' + err);
     });
   });
-app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+
+// put back in /movies: passport.authenticate('jwt', { session: false }), //
+  app.get('/movies', (req, res) => {
   Movies.find()
     .then((movies) => {
       
