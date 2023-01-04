@@ -310,7 +310,7 @@ app.get('/users/:Username', passport.authenticate('jwt', { session: false }), (r
 
 // put back in /movies: passport.authenticate('jwt', { session: false }), //
 
-//3.4 - Not having authentication requirement temporarily//
+//3.4 - Not having authentication requirement temporarily.  Trying a pull request//
   app.get('/movies', (req, res) => {
   Movies.find()
     .then((movies) => {
