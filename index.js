@@ -289,7 +289,7 @@ app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { sess
 // READ //
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/documentation.html')
-  res.send("Welcome to MyFlixApp!");
+  res.send("Welcome to the MyFlixApp!");
 });
 
 app.get('/users', passport.authenticate('jwt', { session: false }), passport.authenticate('jwt', { session: false }), passport.authenticate('jwt', { session: false }), passport.authenticate('jwt', { session: false }), passport.authenticate('jwt', { session: false }), passport.authenticate('jwt', { session: false }), passport.authenticate('jwt', { session: false }), (req, res) => {
