@@ -31,9 +31,15 @@ app.use(cors({
 let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
-// mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-process.env.CONNECTION_URI,
+
+
+mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+
+
+// mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+// process.env.CONNECTION_URI,
+
+
 // morgan middleware function to log requests to terminal//
 app.use(morgan('common'));
 // directs visits to public foler//
@@ -53,7 +59,7 @@ let users = [
 // variable declared for movie list//
 let movies = [
   {
-    "Title": "E.T",
+    "Title": "E.T.",
     "Description": "E.T. is a 1982 American science fiction film produced and directed by Steven Spielberg and written by Melissa Mathison. It tells the story of Elliott, a boy who befriends an extraterrestrial dubbed E.T., who is left behind on Earth.",
     "Genre": {
       "Name": "Drama",
@@ -237,7 +243,7 @@ app.post('/users',
    if (!errors.isEmpty()) {
      return res.status(422).json({ errors: errors.array() });
    }
-    const hashedPassword = Users.hashPassword(req.body.Password);
+    let hashedPassword = Users.hashPassword(req.body.Password);
     Users.findOne({Username: req.body.Username}) // Search to see if a user with the requested username already exists
     .then((user) => {
       if(user) {
@@ -286,7 +292,7 @@ app.get('/', (req, res) => {
   res.send("Welcome to MyFlixApp!");
 });
 
-app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/users', passport.authenticate('jwt', { session: false }), passport.authenticate('jwt', { session: false }), passport.authenticate('jwt', { session: false }), passport.authenticate('jwt', { session: false }), passport.authenticate('jwt', { session: false }), passport.authenticate('jwt', { session: false }), passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.find()
     .then((users) => {
       
@@ -452,8 +458,18 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
+
+//original way of connecting//
+app.listen(8080, () => {
+  console.log('Your app is listening on port 8080.');
+});
+
+
+
 // Widened accesibility from port 8080 only //
-const port = process.env.PORT || 8080;
-app.listen(port, '0.0.0.0',() => {
- console.log('Listening on Port ' + port);
-});//
+// const port = process.env.PORT || 8080;
+// app.listen(port, '0.0.0.0',() => {
+//  console.log('Listening on Port ' + port);
+// });//
+
+
