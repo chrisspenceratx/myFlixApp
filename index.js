@@ -33,11 +33,11 @@ const passport = require('passport');
 require('./passport');
 
 
-// mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
 
-mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-process.env.CONNECTION_URI,
+// mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+// process.env.CONNECTION_URI,
 
 
 // morgan middleware function to log requests to terminal//
@@ -271,7 +271,7 @@ app.post('/users',
       res.status(500).send('Error:' + error);
     });
   });
-app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.post('/users/:Username/movies/:MovieID',  (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
      $push: { FavoriteMovies: req.params.MovieID }
    },
@@ -303,7 +303,7 @@ app.get('/users', passport.authenticate('jwt', { session: false }), passport.aut
       res.status(500).send("Error: " + err);
     });
 });
-app.get('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/users/:Username', (req, res) => {
   Users.findOne({ Username: req.params.Username })
     .then((user) => {
       res.json(user);
@@ -314,9 +314,7 @@ app.get('/users/:Username', passport.authenticate('jwt', { session: false }), (r
     });
   });
 
-// put back in /movies: passport.authenticate('jwt', { session: false }), //
 
-//3.4 - Not having authentication requirement temporarily.  Trying a pull request//
   app.get('/movies', (req, res) => {
   Movies.find()
     .then((movies) => {
@@ -467,9 +465,9 @@ app.listen(8080, () => {
 
 
 // Widened accesibility from port 8080 only //
-const port = process.env.PORT || 8080;
-app.listen(port, '0.0.0.0',() => {
- console.log('Listening on Port ' + port);
-});//
+// const port = process.env.PORT || 8080;
+// app.listen(port, '0.0.0.0',() => {
+//  console.log('Listening on Port ' + port);
+// });//
 
 
