@@ -36,7 +36,7 @@ let movieSchema = mongoose.Schema({
   
   let Movie = mongoose.model('Movie', movieSchema);
   let User = mongoose.model('User', userSchema);
-  //12.1 - put this back in maybe?//
+ 
   // let director = mongoose.model.Director('Director', movieSchema);
  
   module.exports.Movie = Movie;
