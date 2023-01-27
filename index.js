@@ -1,11 +1,13 @@
-const bodyParser = require('body-parser');
 const express = require('express');
 const morgan = require('morgan');
+const bodyParser = require('body-parser');
+
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 const uuid = require('uuid');
-const { check, validationResult } = require('express-validator');
+// const { check, validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 const Models = require('./models.js');
 const Movies = Models.Movie;
@@ -26,34 +28,38 @@ app.use(cors({
     return callback(null, true);
   }
 }));
+// morgan middleware function to log requests to terminal//
+app.use(morgan('common'));
+// directs visits to public foler//
+app.use(express.static('public'));
+
 /* rest rest of code goes here*/
 let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 
 
-// mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.set("strictQuery", false);
 
 
-mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-process.env.CONNECTION_URI,
+mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+// process.env.CONNECTION_URI,
 
 
-// morgan middleware function to log requests to terminal//
-app.use(morgan('common'));
-// directs visits to public foler//
-app.use(express.static('public'));
-let users = [
-  { id: 1,
-    name: "Kim",
-    favoriteMovies: []
-  },
-  {
-    id: 2,
-    name: "Joe",
-    favoriteMovies: ["The Fountain"]
-  }
-];
+
+//**Temporarily commenting this out below */
+// let users = [
+//   { id: 1,
+//     name: "Kim",
+//     favoriteMovies: []
+//   },
+//   {
+//     id: 2,
+//     name: "Joe",
+//     favoriteMovies: ["The Fountain"]
+//   }
+// ];
 
 // variable declared for movie list//
 let movies = [
@@ -61,7 +67,7 @@ let movies = [
     "Title": "E.T.",
     "Description": "E.T. is a 1982 American science fiction film produced and directed by Steven Spielberg and written by Melissa Mathison. It tells the story of Elliott, a boy who befriends an extraterrestrial dubbed E.T., who is left behind on Earth.",
     "Genre": {
-      "Name": "Drama",
+      "Name": "Drama_test_12523",
       "Description": "In film and television, drama is a category or genre of narrative fiction (or semi-fiction) intended to be more serious than humorous in tone.[1] Drama of this kind is usually qualified with additional terms that specify its particular super-genre, macro-genre, or micro-genre,[2] such as soap opera, police crime drama, political drama, legal drama, historical drama, domestic drama, teen drama, and comedy-drama (dramedy). These terms tend to indicate a particular setting or subject-matter, or else they qualify the otherwise serious tone of a drama with elements that encourage a broader range of moods. To these ends, a primary element in a drama is the occurrence of conflict—emotional, social, or otherwise—and its resolution in the course of the storyline."
     },
     "Director": {
@@ -224,68 +230,9 @@ let movies = [
     }
    
 ];
-// CREATE //
-app.post('/users',
-  // Validation logic here for request
-  //you can either use a chain of methods like .not().isEmpty()
-  //which means "opposite of isEmpty" in plain english "is not empty"
-  //or use .isLength({min: 5}) which means
-  //minimum value of 5 characters are only allowed
-  [
-    check('Username', 'Username is required').isLength({min: 5}),
-    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-    check('Password', 'Password is required').not().isEmpty(),
-    check('Email', 'Email does not appear to be valid').isEmail()
-  ], (req,res) =>{
-    // check the validation object for errors
-   let errors = validationResult(req);
-   if (!errors.isEmpty()) {
-     return res.status(422).json({ errors: errors.array() });
-   }
-    let hashedPassword = Users.hashPassword(req.body.Password);
-    Users.findOne({Username: req.body.Username}) // Search to see if a user with the requested username already exists
-    .then((user) => {
-      if(user) {
-        //If the user is found, send a response that it already exists
-        return res.status(400).send(req.body.Username + 'already exists');
-      }
-      else{
-        Users.create({
-          Username: req.body.Username,
-          Password: hashedPassword,
-          Email: req.body.Email,
-          Birth: req.body.Birth,
-        })
-        .then ((user) => {
-          res.status(201).json(user);
-        })
-        .catch((error) => {
-          console.error(error);
-          res.status(500).send('Error:' + error);
-        });
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send('Error:' + error);
-    });
-  });
-app.post('/users/:Username/movies/:MovieID',  (req, res) => {
-  Users.findOneAndUpdate({ Username: req.params.Username }, {
-     $push: { FavoriteMovies: req.params.MovieID }
-   },
-   { new: true },
-  (err, updatedUser) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
-    } else {
-      res.json(updatedUser);
-    }
-  });
-});
 
-// READ //
+
+// GETS - read //
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/documentation.html')
   res.send("Welcome to the MyFlixApp!");
@@ -313,7 +260,6 @@ app.get('/users/:Username', (req, res) => {
     });
   });
 
-
   app.get('/movies', (req, res) => {
   Movies.find()
     .then((movies) => {
@@ -324,8 +270,8 @@ app.get('/users/:Username', (req, res) => {
       console.error(err);
       res.status(500).send("Error: " + err);
     });
-
 });
+
 app.get('/movies/:Title', (req, res) => {
   Movies.findOne({Title: req.params.Title })
     .then((movie) => {
@@ -338,8 +284,7 @@ app.get('/movies/:Title', (req, res) => {
     });
 });
 
-
-app.get('/genre/:genreName', (req, res) => {
+app.get('/movies/genre/:genreName', (req, res) => {
   Movies.findOne({ genreName: req.params.Genre })
     .then((movie) => {
       res.send(movie.Genre.Description);
@@ -349,7 +294,8 @@ app.get('/genre/:genreName', (req, res) => {
       res.status(400).send('Error: ' + err);
     })
 });
-app.get('/director/:directorName', (req, res) => {
+
+app.get('/movies/director/:directorName', (req, res) => {
    Movies.findOne({ directorName: req.params.directorName })
   .then((movie) => {
     res.json(movie.Director);
@@ -359,25 +305,74 @@ app.get('/director/:directorName', (req, res) => {
     res.status(500).send('Error: ' + err);
   });
 });
-// UPDATE //
-app.put(
-  '/users/:Username',
-  passport.authenticate('jwt', { session: false }),
-  [
-      check('Username', 'Username is required').isLength({ min: 5 }),
-      check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-      check('Password', 'Password is required').not().isEmpty(),
-      check('Email', 'Email does not appear to be valid').isEmail()
-  ],
+
+// get api documentation what at /documentation
+
+app.get(
+  '/documentation',
+  // passport.authenticate('jwt', { session: false }),
   (req, res) => {
-      // check the validation object for errors
-      let errors = validationResult(req);
+      res.sendFile('public/documentation.html', { root: __dirname });
+  }
+);
 
-      if (!errors.isEmpty()) {
-          return res.status(422).json({ errors: errors.array() });
-      }
 
-      let hashedPassword = Users.hashPassword(req.body.Password);
+// POSTS - create)
+app.post('/movies',
+  // passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+      Movies.findOne({ Username: req.body.Title }).then((movie) => {
+          if (movie) {
+              return res.status(400).send(req.body.Title + 'aleady exists');
+          } else {
+              Movies.create({
+                  Title: req.body.Title,
+                  Description: req.body.Description,
+                  Genre: {
+                      Name: req.body.Name,
+                      Description: req.body.Description,
+                  },
+                  Director: {
+                      Name: req.body.Name,
+                      Bio: req.body.Bio,
+                  },
+                  ImageURL: req.body.ImageURL,
+                  Featured: req.body.Boolean,
+              })
+                  .then((movie) => {
+                      res.status(201).json(movie);
+                  })
+                  .catch((err) => {
+                      console.log(err);
+                      res.status(500).send('Error: ' + err);
+                  });
+          }
+      });
+  }
+);
+
+
+app.post('/users/:Username/movies/:MovieID',  (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, {
+     $push: { FavoriteMovies: req.params.MovieID }
+   },
+   { new: true },
+  (err, updatedUser) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
+});
+
+
+
+
+// PUT - update//
+app.put('/users/:Username', (req, res) => {
+     
       Users.findOneAndUpdate(
           { Username: req.params.Username },
           {
@@ -385,7 +380,8 @@ app.put(
                   Username: req.body.Username,
                   Password: hashedPassword,
                   Email: req.body.Email,
-                  Birthday: req.body.Birthday
+                  Birthday: req.body.Birthday, 
+                  
               }
           },
           { new: true }, // This line makes sure that the updated document is returned
@@ -400,6 +396,7 @@ app.put(
       );
   }
 );
+
 
 
 // DELETE//
@@ -438,16 +435,16 @@ app.use((err, req, res, next) => {
 });
 
 //original way of connecting//
-// app.listen(8080, () => {
-//   console.log('Your app is listening on port 8080.');
-// });
+app.listen(8080, () => {
+  console.log('Your app is listening on port 8080.');
+});
 
 
 
 // Widened accesibility from port 8080 only //
-const port = process.env.PORT || 8080;
-app.listen(port, '0.0.0.0',() => {
- console.log('Listening on Port ' + port);
-});//
+// const port = process.env.PORT || 8080;
+// app.listen(port, '0.0.0.0',() => {
+//  console.log('Listening on Port ' + port);
+// });//
 
 
