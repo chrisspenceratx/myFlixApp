@@ -1,13 +1,15 @@
 const express = require('express');
+const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
-const app = express();
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
 const uuid = require('uuid');
-// const { check, validationResult } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 const Models = require('./models.js');
 const Movies = Models.Movie;
@@ -49,17 +51,17 @@ mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, 
 
 
 //**Temporarily commenting this out below */
-// let users = [
-//   { id: 1,
-//     name: "Kim",
-//     favoriteMovies: []
-//   },
-//   {
-//     id: 2,
-//     name: "Joe",
-//     favoriteMovies: ["The Fountain"]
-//   }
-// ];
+let users = [
+  { id: 1,
+    name: "Kim",
+    favoriteMovies: []
+  },
+  {
+    id: 2,
+    name: "Joe",
+    favoriteMovies: ["The Fountain"]
+  }
+];
 
 // variable declared for movie list//
 let movies = [
@@ -372,6 +374,13 @@ app.post('/users/:Username/movies/:MovieID',  (req, res) => {
 
 // PUT - update//
 app.put('/users/:Username', (req, res) => {
+  let errors = validationResult(req);
+  
+	  if (!errors.isEmpty()) {
+		return res.status(422).json({ errors: errors.array() });
+	  }
+  
+	  let hashedPassword = Users.hashPassword(req.body.Password);
      
       Users.findOneAndUpdate(
           { Username: req.params.Username },
