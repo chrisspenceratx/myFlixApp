@@ -234,11 +234,11 @@ let movies = [
 ];
 
 
-// GETS - read //
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/documentation.html')
-  res.send("Welcome to the MyFlixApp!");
-});
+// // GETS - read //
+// app.get('/', (req, res) => {
+//   res.sendFile(__dirname + '/documentation.html')
+//   res.send("Welcome to the MyFlixApp!");
+// });
 
 app.get('/users',(req, res) => {
   Users.find()
