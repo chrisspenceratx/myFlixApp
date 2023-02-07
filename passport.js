@@ -1,8 +1,7 @@
 //1.5 addition//
-// const jwtSecret = 'your_jwt_secret'; // This has to be the same key used in the JWTStrategy
-
-// const jwt = require('jsonwebtoken');
-// ///
+const jwtSecret = 'your_jwt_secret'; // This has to be the same key used in the JWTStrategy
+const jwt = require('jsonwebtoken');
+// passport = require('passport');
 
 const passport = require('passport'),
   LocalStrategy = require('passport-local').Strategy,
