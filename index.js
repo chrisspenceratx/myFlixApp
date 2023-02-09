@@ -1,5 +1,4 @@
 const express = require('express');
-const serverless = require('serverless-http');
 const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
@@ -48,9 +47,9 @@ require('./passport');
 mongoose.set("strictQuery", false);
 
 
-mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
-// mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-// process.env.CONNECTION_URI,
+// mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
 
 
 
@@ -291,17 +290,17 @@ app.get('/movies/:Title', (req, res) => {
 });
 
 //2.7 - fix this endpoint later, oter 
-app.get('/movies/:Director', (req, res) => {
-  Movies.find ({Director: req.params.Director })
-    .then((movie) => {
+// app.get('/movies/:Director', (req, res) => {
+//   Movies.find ({Director: req.params.Director })
+//     .then((movie) => {
       
-      res.json(movie);
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send("Error: " + err);
-    });
-});
+//       res.json(movie);
+//     })
+//     .catch((err) => {
+//       console.error(err);
+//       res.status(500).send("Error: " + err);
+//     });
+// });
 
 
 
@@ -469,16 +468,16 @@ app.use((err, req, res, next) => {
 });
 
 //original way of connecting//
-app.listen(8080, () => {
-  console.log('Your app is listening on port 8080.');
-});
+// app.listen(8080, () => {
+//   console.log('Your app is listening on port 8080.');
+// });
 
 
 
 // Widened accesibility from port 8080 only //
-// const port = process.env.PORT || 8080;
-// app.listen(port, '0.0.0.0',() => {
-//  console.log('Listening on Port ' + port);
-// });//
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0',() => {
+ console.log('Listening on Port ' + port);
+});//
 
 
