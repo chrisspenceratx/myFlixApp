@@ -267,9 +267,9 @@ app.get('/users/:Username', (req, res) => {
 
   app.get('/movies', (req, res) => {
   Movies.find()
-    .then((movies) => {
+    .then((movie) => {
       
-      res.status(201).json(movies);
+      res.status(201).json(movie);
     })
     .catch((err) => {
       console.error(err);
@@ -468,9 +468,9 @@ app.use((err, req, res, next) => {
 });
 
 //original way of connecting//
-// app.listen(8080, () => {
-//   console.log('Your app is listening on port 8080.');
-// });
+app.listen(8080, () => {
+  console.log('Your app is listening on port 8080.');
+});
 
 
 
@@ -478,6 +478,6 @@ app.use((err, req, res, next) => {
 const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0',() => {
  console.log('Listening on Port ' + port);
-});//
+});
 
 
