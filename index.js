@@ -47,8 +47,9 @@ require('./passport');
 mongoose.set("strictQuery", false);
 
 
-// mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.connect('mongodb://localhost:27017/myFlixFinderDB', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
 
 
 
@@ -279,9 +280,9 @@ app.get('/users/:Username', (req, res) => {
 
 app.get('/movies/:Title', (req, res) => {
   Movies.findOne({Title: req.params.Title })
-    .then((movie) => {
+    .then((movies) => {
       
-      res.json(movie);
+      res.json(movies);
     })
     .catch((err) => {
       console.error(err);
@@ -475,9 +476,9 @@ app.listen(8080, () => {
 
 
 // Widened accesibility from port 8080 only //
-const port = process.env.PORT || 8080;
-app.listen(port, '0.0.0.0',() => {
- console.log('Listening on Port ' + port);
-});
+// const port = process.env.PORT || 8080;
+// app.listen(port, '0.0.0.0',() => {
+//  console.log('Listening on Port ' + port);
+// });
 
 
