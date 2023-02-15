@@ -68,6 +68,7 @@ let users = [
 ];
 
 // variable declared for movie list//
+//testing the connection from api to client side//
 let movies = [
   {
     "Title": "E.T.",
@@ -303,7 +304,7 @@ app.get('/movies/:Title', (req, res) => {
 //     });
 // });
 
-//testing 3.4 pull request//
+//testing 3.4 pull request again and again//
 
 
 app.get('/movies/genre/:genreName', (req, res) => {
