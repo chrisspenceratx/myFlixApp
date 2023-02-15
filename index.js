@@ -68,6 +68,7 @@ let users = [
 ];
 
 // variable declared for movie list//
+//testing the connection from api to client side//
 let movies = [
   {
     "Title": "E.T.",
