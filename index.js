@@ -22,7 +22,7 @@ const Users = Models.User;
 const cors = require('cors');
 // const allowedOrigins = ["*"];
 //below code shows origins that are authorized//
-let allowedOrigins = ['http://localhost:8080', 'http://localhost:1234', 'http://myflixfinder.herokuapp.com', 'http://myflixfinder.herokuapp.com/movies', 'https://myflixfinder.herokuapp.com', 'mongodb://localhost:27017/myflixfinderdb', 'mongodb://localhost:27017'];
+let allowedOrigins = ['http://localhost:8080', 'http://localhost:1234', 'http://myflixfinder.herokuapp.com', 'http://myflixfinder.herokuapp.com/movies', 'https://myflixfinder.herokuapp.com/movies', 'https://myflixfinder.herokuapp.com', 'mongodb://localhost:27017/myflixfinderdb', 'mongodb://localhost:27017'];
 app.use(cors({
   origin: (origin, callback) => {
     if(!origin) return callback(null, true);
