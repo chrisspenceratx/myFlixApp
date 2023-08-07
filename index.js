@@ -48,8 +48,8 @@ mongoose.set("strictQuery", false);
 
 
 // mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.connect( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-
+// mongoose.connect( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb+srv://myFlixDBadmin:xbowser1@myFlixDB.nop4cxy.mongodb.net/myFlixDB?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true }, () => console.log("MongoDB Connected"));
 
 
 
@@ -471,7 +471,7 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
-//original way of connecting//
+//original way of connecting...getting heroku to connect again//
 // app.listen(8080, () => {
 //   console.log('Your app is listening on port 8080.');
 // });
